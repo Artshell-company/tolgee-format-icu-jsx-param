@@ -1,0 +1,50 @@
+name: Publish on npm and create a release with changelog
+
+on:
+  push:
+    tags:
+      - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
+
+jobs:
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Create CHANGELOG
+        id: changelog
+        uses: requarks/changelog-action@v1
+        with:
+          token: ${{ github.token }}
+          tag: ${{ github.ref_name }}
+          writeToFile: false
+          excludeTypes: "release,build,docs,other"
+
+      - name: Create Release
+        uses: mikepenz/action-gh-release@v0.2.0-a03 #softprops/action-gh-release
+        with:
+          body: ${{steps.changelog.outputs.changes}}
+
+  publish-on-npm:
+    name: Publish on npm
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout repo"
+        uses: actions/checkout@v3
+      - name: "Setup node@18"
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          registry-url: https://registry.npmjs.org/
+      - name: "Disable prepare script"
+        run: npm pkg delete scripts.prepare
+      - name: "Install dependencies"
+        run: npm install --no-audit --loglevel error --fund false
+        env:
+          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
+      - name: "Publish package"
+        run: npm publish
+        env:
+          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
