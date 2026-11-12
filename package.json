@@ -1,6 +1,6 @@
 {
   "name": "@artshell/tolgee-format-icu-jsx-param",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Tolgee format ICU plugin that supports jsx params",
   "main": "./dist/tolgee-format-icu-jsx-param.cjs.js",
   "module": "./dist/tolgee-format-icu-jsx-param.esm.js",

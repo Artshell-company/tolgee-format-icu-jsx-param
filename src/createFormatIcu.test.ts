@@ -12,6 +12,18 @@ describe('format icu', () => {
     expect(result).toEqual('result is 42,000');
   });
 
+  it('replaces a function argument with its result only', () => {
+    const formatter = createFormatIcu();
+    const element = { type: 'br' };
+    const br = () => element;
+    const result = formatter.format({
+      translation: 'first{br}second{br}third',
+      params: { br },
+      language: 'en',
+    });
+    expect(result).toEqual(['first', element, 'second', element, 'third']);
+  });
+
   it('fixes invalid locale', () => {
     const formatter = createFormatIcu() as any;
     expect(formatter.getLocale('en_GB')).toEqual('en-GB');

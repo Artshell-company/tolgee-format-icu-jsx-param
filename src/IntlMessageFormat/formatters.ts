@@ -177,6 +177,7 @@ export function formatToParts<T>(
             } as MessageFormatPart<T>;
           })
         );
+        continue;
       }
       // END OF EDIT
       result.push({
